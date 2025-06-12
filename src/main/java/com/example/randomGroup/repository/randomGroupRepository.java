@@ -1,14 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.example.randomGroup.repository;
 
-/**
- *
- * @author Utilisateur
- */
-public class randomGroupRepository {
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.randomGroup.model.User;
+
+public interface randomGroupRepository extends JpaRepository<User, Long> {
+    // Optional : peut contenir ou non une value, vérifiable avec isPresent()
+    //Ajout de cette méthode pour l'utiliser dans le controller
+        Optional<User> findByEmail(String email);
 
 }
