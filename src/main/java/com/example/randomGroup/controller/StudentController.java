@@ -2,6 +2,7 @@ package com.example.randomGroup.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.randomGroup.model.Student;
@@ -11,6 +12,7 @@ import com.example.randomGroup.repository.StudentRepository;
 @RequestMapping("/students")
 public class StudentController {
 
+    @Autowired
     private final StudentRepository repository;
 
     public StudentController(StudentRepository repository) {

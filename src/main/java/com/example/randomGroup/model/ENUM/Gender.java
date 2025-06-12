@@ -1,6 +1,6 @@
 
 
-package com.example.randomGroup.model;
+package com.example.randomGroup.model.ENUM;
 
 //Création d'un enum Gender pour l'utiliser dans Student
 public enum Gender {

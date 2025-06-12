@@ -1,9 +1,15 @@
 package com.example.randomGroup.model;
 
+import com.example.randomGroup.model.ENUM.Gender;
+import com.example.randomGroup.model.ENUM.Level;
+import com.example.randomGroup.model.ENUM.Profile;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Student {
@@ -21,12 +27,17 @@ public class Student {
     private Profile profile;
     private int age;
 
+    // Relation avec table StudentList
+    @ManyToOne
+    @JoinColumn(name = "list_id")
+    private StudentList list;
+
     public Student() {
     }
 
     // Constructor
     public Student(Long id, String name, Gender gender, Level frLevel, Level skillLevel, boolean isDWWM,
-            Profile profile, int age) {
+            Profile profile, int age, StudentList list) {
         this.name = name;
         this.gender = gender;
         this.frLevel = frLevel;
@@ -34,6 +45,7 @@ public class Student {
         this.isDWWM = isDWWM;
         this.profile = profile;
         this.age = age;
+        this.list = list;
     }
 
     // Getters & Setters
@@ -99,5 +111,13 @@ public class Student {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public StudentList getList() {
+        return list;
+    }
+
+    public void setList(StudentList list) {
+        this.list = list;
     }
 }

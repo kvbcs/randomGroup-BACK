@@ -1,4 +1,4 @@
-package com.example.randomGroup.model;
+package com.example.randomGroup.model.ENUM;
 
 //Crétion d'un enum utilisé dans Student
 public enum Profile {
