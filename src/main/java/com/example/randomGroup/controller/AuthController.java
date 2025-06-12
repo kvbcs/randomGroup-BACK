@@ -9,14 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.randomGroup.model.User;
-import com.example.randomGroup.repository.randomGroupRepository;
+import com.example.randomGroup.repository.UserRepository;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
-    private randomGroupRepository repository;
+    private UserRepository repository;
 
     @PostMapping("/register")
     public User register(@RequestBody User user) {
@@ -28,14 +28,15 @@ public class AuthController {
 
         // Sinon, register validé
         System.out.println("✅ Register successful");
-        //Sauvegarde l'utilisateur dans la bdd
+        // Sauvegarde l'utilisateur dans la bdd
         return repository.save(user);
     }
 
     @PostMapping("/login")
+    //Méthode attend une réponse HTTP avec ResponseEntity
     public ResponseEntity<String> login(@RequestBody User user) {
 
-        //Optional : peut contenir ou non une value, vérifiable avec isPresent()
+        // Optional : peut contenir ou non une value, vérifiable avec isPresent()
         Optional<User> existingUser = repository.findByEmail(user.getEmail());
 
         // Vérification si l'utilisateur n'existe pas
@@ -44,6 +45,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ User not found");
         }
 
+        //Vérif que le body corresponde à un password de la bdd
         if (!existingUser.get().getPassword().equals(user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ Incorrect password");
         }
