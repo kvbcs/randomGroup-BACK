@@ -54,12 +54,11 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ User not found");
         }
 
-        // Vérif que le body corresponde à un password de la bdd
+        // Vérif que le body password corresponde à un password de la bdd
         if (!existingUser.get().getPassword().equals(user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ Incorrect password");
         }
 
-        System.out.println("✅ Login successful");
-        return ResponseEntity.ok("Welcome back " + existingUser.get().getFirstName() + "!");
+        return ResponseEntity.ok("Login successful !");
     }
 }
