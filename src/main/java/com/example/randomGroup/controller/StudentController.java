@@ -12,9 +12,9 @@ import com.example.randomGroup.repository.StudentRepository;
 @RequestMapping("/students")
 public class StudentController {
 
-    @Autowired
     private final StudentRepository repository;
 
+    @Autowired
     public StudentController(StudentRepository repository) {
         this.repository = repository;
     }

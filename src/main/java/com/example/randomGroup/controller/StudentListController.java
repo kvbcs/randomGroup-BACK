@@ -19,9 +19,9 @@ import com.example.randomGroup.repository.StudentListRepository;
 @RequestMapping("/lists")
 public class StudentListController {
 
-    @Autowired
     private final StudentListRepository repository;
-
+    
+    @Autowired
     public StudentListController(StudentListRepository repository) {
         this.repository = repository;
     }

@@ -6,7 +6,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.example.randomGroup.model.User;
 import com.example.randomGroup.repository.UserRepository;
@@ -15,8 +18,12 @@ import com.example.randomGroup.repository.UserRepository;
 @RequestMapping("/auth")
 public class AuthController {
 
+    private final UserRepository repository;
+
     @Autowired
-    private UserRepository repository;
+    public AuthController(UserRepository repository) {
+        this.repository = repository;
+    }
 
     @PostMapping("/register")
     public User register(@RequestBody User user) {
