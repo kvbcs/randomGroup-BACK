@@ -9,6 +9,8 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 
 @Entity
@@ -16,13 +18,15 @@ public class StudentList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     // Variables
-    private Long id;
     private String name;
 
     // Relation one to many à la table student
+    //orphanRemoval = supprime les étudiants si la liste est supprimée
     @OneToMany(mappedBy = "list", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference //Sérialise le parent pour stopper la bouble infinie d'affichage
     private List<Student> students = new ArrayList<>();
 
     // Constructor

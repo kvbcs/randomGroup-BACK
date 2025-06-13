@@ -1,9 +1,12 @@
 package com.example.randomGroup.model;
 
+
 import com.example.randomGroup.model.ENUM.Gender;
 import com.example.randomGroup.model.ENUM.Level;
 import com.example.randomGroup.model.ENUM.Profile;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,12 +19,14 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     // Variables
-    private Long id;
     private String name;
     private Gender gender;
-    private Level frLevel;
+            @Column(name = "fr_level")
+            private Level frLevel;
+    @Column(name = "skill_level")
     private Level skillLevel;
     private boolean isDWWM;
     private Profile profile;
@@ -30,6 +35,7 @@ public class Student {
     // Relation avec table StudentList
     @ManyToOne
     @JoinColumn(name = "list_id")
+    @JsonBackReference //affiche qu'une fois la liste dans Student sinon boucle infinie
     private StudentList list;
 
     public Student() {
