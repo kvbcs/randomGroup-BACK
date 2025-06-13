@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.randomGroup.model.User;
 import com.example.randomGroup.repository.UserRepository;
@@ -26,21 +27,22 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        // Méthode findByEmail qui a été mis dans le fichier repository
+    public ResponseEntity<String> register(@RequestBody User user) {
+        // Vérifie si l'email existe déjà avec méthode créé dans le repository
         if (repository.findByEmail(user.getEmail()).isPresent()) {
-            // Si le compte existe déjà, return rien
-            return null;
+            // Renvoie un http 409 conflit
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
         }
 
-        // Sinon, register validé
-        System.out.println("✅ Register successful");
-        // Sauvegarde l'utilisateur dans la bdd
-        return repository.save(user);
+        // Enregistrement
+        repository.save(user);
+
+        // Retourne 201 + message confirmation
+        return ResponseEntity.status(HttpStatus.CREATED).body("Register Successful !");
     }
 
     @PostMapping("/login")
-    //Méthode attend une réponse HTTP avec ResponseEntity
+    // Méthode attend une réponse HTTP avec ResponseEntity
     public ResponseEntity<String> login(@RequestBody User user) {
 
         // Optional : peut contenir ou non une value, vérifiable avec isPresent()
@@ -52,7 +54,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("❌ User not found");
         }
 
-        //Vérif que le body corresponde à un password de la bdd
+        // Vérif que le body corresponde à un password de la bdd
         if (!existingUser.get().getPassword().equals(user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("❌ Incorrect password");
         }
