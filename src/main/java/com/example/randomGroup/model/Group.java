@@ -10,10 +10,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 
 @Entity
+@Table(name = "group_table")
 public class Group {
 
     @Id
@@ -21,7 +23,7 @@ public class Group {
     private Long id;
 
     // Variables
-        @Column(name = "group_number")
+    @Column(name = "group_number")
     private int groupNumber;
     private String name;
     // @Column(name = "mix_dwwm")
@@ -54,11 +56,11 @@ public class Group {
         this.id = id;
         this.groupNumber = groupNumber;
         this.name = name;
-        // this.mixDWWM = mixDWWM;
-        // this.mixAges = mixAges;
-        // this.mixProfiles = mixProfiles;
-        // this.mixTech = mixTech;
-        // this.mixFrench = mixFrench;
+        this.mixDWWM = mixDWWM;
+        this.mixAges = mixAges;
+        this.mixProfiles = mixProfiles;
+        this.mixTech = mixTech;
+        this.mixFrench = mixFrench;
         this.students = students;
     }
 

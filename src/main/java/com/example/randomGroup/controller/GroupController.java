@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +22,7 @@ import com.example.randomGroup.repository.GroupRepository;
 import com.example.randomGroup.repository.StudentRepository;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/groups")
 public class GroupController {
 
     private final GroupRepository repository;
@@ -42,8 +44,8 @@ public class GroupController {
         return this.repository.findById(id).orElseThrow();
     }
 
-    @PostMapping
-    public Group create(@RequestBody Group group) {
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Group> create(@RequestBody Group group) {
 
         // 1. Récupérer tous les étudiants disponibles
         List<Student> allStudents = studentRepository.findAll();
@@ -59,7 +61,10 @@ public class GroupController {
         group.setStudents(selectedStudents);
 
         // 4. Sauvegarder
-        return repository.save(group);
+        Group saved = repository.save(group);
+        System.out.println("Groupe reçu : " + group.getName());
+
+        return ResponseEntity.ok(saved);
     }
 
     // Fonction pour filtrer les étudiants
