@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 
 @Entity
 public class Group {
@@ -20,13 +21,20 @@ public class Group {
     private Long id;
 
     // Variables
+        @Column(name = "group_number")
     private int groupNumber;
     private String name;
+    // @Column(name = "mix_dwwm")
     private boolean mixDWWM;
+    // @Column(name = "mix_ages")
     private boolean mixAges;
+    // @Column(name = "mix_profiles")
     private boolean mixProfiles;
+    // @Column(name = "mix_tech")
     private boolean mixTech;
+    // @Column(name = "mix_french")
     private boolean mixFrench;
+    // @Column(name = "mix_gender")
     private boolean mixGender;
 
     // mappedBy : référence la variable group de Student

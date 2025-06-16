@@ -1,16 +1,10 @@
 package com.example.randomGroup.controller;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.example.randomGroup.model.Group;
 import com.example.randomGroup.model.Student;
@@ -57,7 +50,6 @@ public class GroupController {
 
         // 2. Filtrer les étudiants selon les critères
         List<Student> selectedStudents = filterStudents(allStudents, group);
-        // TODO : rajouter méthode dans repository
 
         // 3. Affecter les étudiants au groupe
         for (Student student : selectedStudents) {
@@ -84,12 +76,6 @@ public class GroupController {
         // Ages
         List<Student> old = new ArrayList<>();
         List<Student> young = new ArrayList<>();
-        // Profiles
-        List<Student> timidList = new ArrayList<>();
-        List<Student> reserveList = new ArrayList<>();
-        List<Student> aLaiseList = new ArrayList<>();
-
-        List<Student> existingStudents = studentRepository.findAll();
 
         // Étape 1 : segmentation manuelle des étudiants
         for (Student student : allStudents) {
@@ -105,7 +91,7 @@ public class GroupController {
                     males.add(student);
                 } else if (student.getGender() == Gender.FEMININ) {
                     females.add(student);
-                } else if (student.getGender() == Gender.NE_SE_PRONONCE_PAS){
+                } else if (student.getGender() == Gender.NE_SE_PRONONCE_PAS) {
                     nonBinary.add(student);
                 }
             }
@@ -154,29 +140,29 @@ public class GroupController {
     }
 
     // Sélectionne un nombre donné d'étudiants d'une liste aléatoirement
-private List<Student> pickRandomFromList(List<Student> list, int count) {
-    List<Student> copy = new ArrayList<>(list);
-    shuffleList(copy);
+    private List<Student> pickRandomFromList(List<Student> list, int count) {
+        List<Student> copy = new ArrayList<>(list);
+        shuffleList(copy);
 
-    List<Student> result = new ArrayList<>();
-    int size = Math.min(count, copy.size());
+        List<Student> result = new ArrayList<>();
+        int size = Math.min(count, copy.size());
 
-    for (int i = 0; i < size; i++) {
-        result.add(copy.get(i));
+        for (int i = 0; i < size; i++) {
+            result.add(copy.get(i));
+        }
+        return result;
     }
-    return result;
-}
 
-// Mélange une liste
-private void shuffleList(List<Student> list) {
-    Random random = new Random();
-    for (int i = list.size() - 1; i > 0; i--) {
-        int j = random.nextInt(i + 1);
-        Student temp = list.get(i);
-        list.set(i, list.get(j));
-        list.set(j, temp);
+    // Mélange une liste
+    private void shuffleList(List<Student> list) {
+        Random random = new Random();
+        for (int i = list.size() - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            Student temp = list.get(i);
+            list.set(i, list.get(j));
+            list.set(j, temp);
+        }
     }
-}
 
     @PutMapping("/{id}")
     public Group update(@PathVariable Long id, @RequestBody Group group) {
