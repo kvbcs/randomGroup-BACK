@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.randomGroup.model.DTO.GroupRequestDTO;
 import com.example.randomGroup.model.Group;
 import com.example.randomGroup.model.Student;
 import com.example.randomGroup.model.ENUM.Gender;
@@ -44,33 +44,34 @@ public class GroupController {
         return this.repository.findById(id).orElseThrow();
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Group> create(@RequestBody Group group) {
-
+    @PostMapping
+    public ResponseEntity<Group> create(@RequestBody GroupRequestDTO dto) {
+        
         // 1. Récupérer tous les étudiants disponibles
         List<Student> allStudents = studentRepository.findAll();
 
         // 2. Filtrer les étudiants selon les critères
-        List<Student> selectedStudents = filterStudents(allStudents, group);
+        List<Student> selectedStudents = filterStudents(allStudents, dto);
 
-        // 3. Affecter les étudiants au groupe
-        for (Student student : selectedStudents) {
-            student.setGroup(group); // Important pour la relation bidirectionnelle
+        // 3. Crée l'entité Group avec uniquement les infos à stocker
+        Group group = new Group();
+        group.setName(dto.getName());
+        
+        for (Student s : selectedStudents) {
+            s.setGroup(group);
         }
-
+        
         group.setStudents(selectedStudents);
-
         // 4. Sauvegarder
         Group saved = repository.save(group);
-        System.out.println("Groupe reçu : " + group.getName());
 
         return ResponseEntity.ok(saved);
     }
 
     // Fonction pour filtrer les étudiants
-    public List<Student> filterStudents(List<Student> allStudents, Group groupCriteria) {
+    public List<Student> filterStudents(List<Student> allStudents, GroupRequestDTO dto) {
 
-        int groupSize = groupCriteria.getGroupNumber();
+        int groupSize = dto.getGroupNumber();
 
         // Initialisation des listes par critère
         List<Student> males = new ArrayList<>();
@@ -86,12 +87,12 @@ public class GroupController {
         for (Student student : allStudents) {
 
             // DWWM
-            if (groupCriteria.getMixDWWM() && Boolean.TRUE.equals(student.getIsDWWM())) {
+            if (dto.getMixDWWM() && Boolean.TRUE.equals(student.getIsDWWM())) {
                 dwwms.add(student);
             }
 
             // Genre
-            if (groupCriteria.getMixGender()) {
+            if (dto.getMixGender()) {
                 if (student.getGender() == Gender.MASCULIN) {
                     males.add(student);
                 } else if (student.getGender() == Gender.FEMININ) {
@@ -102,7 +103,7 @@ public class GroupController {
             }
 
             // Âge
-            if (groupCriteria.getMixAges()) {
+            if (dto.getMixAges()) {
                 if (student.getAge() <= 25) {
                     young.add(student);
                 } else {
@@ -115,21 +116,21 @@ public class GroupController {
         List<Student> selected = new ArrayList<>();
 
         // Exemple : équilibre homme/femme si activé
-        if (groupCriteria.getMixGender()) {
+        if (dto.getMixGender()) {
             int half = groupSize / 2;
             selected.addAll(pickRandomFromList(males, half));
             selected.addAll(pickRandomFromList(females, groupSize - half));
         }
 
         // Exemple : équilibre âge si activé et pas encore rempli
-        else if (groupCriteria.getMixAges()) {
+        else if (dto.getMixAges()) {
             int half = groupSize / 2;
             selected.addAll(pickRandomFromList(young, half));
             selected.addAll(pickRandomFromList(old, groupSize - half));
         }
 
         // Si critère DWWM activé uniquement
-        else if (groupCriteria.getMixDWWM()) {
+        else if (dto.getMixDWWM()) {
             selected.addAll(pickRandomFromList(dwwms, groupSize));
         }
 
@@ -171,12 +172,12 @@ public class GroupController {
 
     @PutMapping("/{id}")
     public Group update(@PathVariable Long id, @RequestBody Group group) {
-        Group existingGroup = repository.findById(id).orElseThrow(() -> new RuntimeException("Group not found"));
-        existingGroup.setName(group.getName());
-        existingGroup.setGroupNumber(group.getGroupNumber());
-        existingGroup.setStudents(group.getStudents());
+    Group existingGroup = repository.findById(id).orElseThrow(() -> new
+    RuntimeException("Group not found"));
+    existingGroup.setName(group.getName());
+    existingGroup.setStudents(group.getStudents());
 
-        return repository.save(existingGroup);
+    return repository.save(existingGroup);
     }
 
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,7 +23,9 @@ public class Student {
 
     // Variables
     private String name;
+    @Enumerated(EnumType.STRING)
     private Gender gender;
+    @Enumerated(EnumType.INT)
     @Column(name = "fr_level")
     private Level frLevel;
     @Column(name = "skill_level")
