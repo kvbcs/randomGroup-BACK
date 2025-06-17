@@ -4,15 +4,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+//import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 public class StudentList {
 
@@ -24,18 +29,24 @@ public class StudentList {
     private String name;
 
     // Relation one to many à la table student
-    //orphanRemoval = supprime les étudiants si la liste est supprimée
+    // orphanRemoval = supprime les étudiants si la liste est supprimée
     @OneToMany(mappedBy = "list", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference //Sérialise le parent pour stopper la bouble infinie d'affichage
+    // @JsonManagedReference // Sérialise le parent pour stopper la bouble infinie
+    // d'affichage
     private List<Student> students = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     // Constructor
     public StudentList() {
     }
 
-    public StudentList(Long id, String name, List<Student> students) {
+    public StudentList(Long id, String name, List<Student> students, User user) {
         this.name = name;
         this.students = students;
+        this.user = user;
     }
 
     // Getters et Setters
@@ -61,5 +72,13 @@ public class StudentList {
 
     public void setStudents(List<Student> students) {
         this.students = students;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

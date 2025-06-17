@@ -1,12 +1,16 @@
 package com.example.randomGroup.model;
 
+
 import com.example.randomGroup.model.ENUM.Gender;
 import com.example.randomGroup.model.ENUM.Level;
 import com.example.randomGroup.model.ENUM.Profile;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+//import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 public class Student {
 
@@ -25,32 +30,34 @@ public class Student {
     private String name;
     @Enumerated(EnumType.STRING)
     private Gender gender;
-    @Enumerated(EnumType.INT)
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "fr_level")
     private Level frLevel;
     @Column(name = "skill_level")
+    @Enumerated(EnumType.ORDINAL)
     private Level skillLevel;
-    private boolean isDWWM;
+    private Boolean isDWWM;
+    @Enumerated(EnumType.STRING)
     private Profile profile;
-    private int age;
+    private Integer age;
 
     // Relation avec table StudentList
     @ManyToOne
-    @JoinColumn(name = "list_id")
-    @JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle infinie
+    @JoinColumn(name = "list")
+    //@JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle infinie
     private StudentList list;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id")
-    @JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle infinie
-    private Group group;
+    // @ManyToOne
+    // @JoinColumn(name = "group_id")
+    // @JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle infinie
+    // private Group group;
 
     public Student() {
     }
 
     // Constructor
-    public Student(Long id, String name, Gender gender, Level frLevel, Level skillLevel, boolean isDWWM,
-            Profile profile, int age, StudentList list, Group group) {
+    public Student(Long id, String name, Gender gender, Level frLevel, Level skillLevel, Boolean isDWWM,
+            Profile profile, Integer age, StudentList list) {
         this.name = name;
         this.gender = gender;
         this.frLevel = frLevel;
@@ -59,7 +66,6 @@ public class Student {
         this.profile = profile;
         this.age = age;
         this.list = list;
-        this.group = group;
     }
 
     // Getters & Setters
@@ -103,11 +109,11 @@ public class Student {
         this.skillLevel = skillLevel;
     }
 
-    public boolean getIsDWWM() {
+    public Boolean getIsDWWM() {
         return isDWWM;
     }
 
-    public void setIsDWWM(boolean isDWWM) {
+    public void setIsDWWM(Boolean isDWWM) {
         this.isDWWM = isDWWM;
     }
 
@@ -119,11 +125,11 @@ public class Student {
         this.profile = profile;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
@@ -135,11 +141,11 @@ public class Student {
         this.list = list;
     }
 
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
+    // public Group getGroup() {
+    // return group;
+    // }
+    //
+    // public void setGroup(Group group) {
+    // this.group = group;
+    // }
 }

@@ -1,10 +1,14 @@
 package com.example.randomGroup.model;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,22 +21,25 @@ public class User {
 
     //Variables
     //Renommage des colonnes car Postgres ne fais pas de camelCase
-        @Column(name = "first_name")
-        private String firstName;
-        @Column(name = "last_name")
+    @Column(name = "first_name")
+    private String firstName;
+    @Column(name = "last_name")
     private String lastName;
     private String email;
     private String password;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentList> lists;
 
     public User() {
     }
 
     //Constructor
-    public User(Long id, String firstName, String lastName, String email, String password) {
+    public User(Long id, String firstName, String lastName, String email, String password, List<StudentList> lists) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.lists = lists;
     }
 
     //Getters & Setters
@@ -74,5 +81,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<StudentList> getLists() {
+        return lists;
+    }
+
+    public void setLists(List<StudentList> lists) {
+        this.lists = lists;
     }
 }

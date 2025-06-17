@@ -31,12 +31,9 @@ public class AuthController {
         // Vérifie si l'email existe déjà avec méthode créé dans le repository
         if (repository.findByEmail(user.getEmail()).isPresent()) {
             // Renvoie un http 409 conflit
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");
-        }
-
-        // Enregistrement
-        repository.save(user);
-
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid credentials");
+        } else {        repository.save(user);
+}
         // Retourne 201 + message confirmation
         return ResponseEntity.status(HttpStatus.CREATED).body("Register Successful !");
     }
