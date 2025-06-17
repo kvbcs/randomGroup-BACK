@@ -3,7 +3,7 @@ package com.example.randomGroup.model;
 import com.example.randomGroup.model.ENUM.Gender;
 import com.example.randomGroup.model.ENUM.Level;
 import com.example.randomGroup.model.ENUM.Profile;
-//import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -49,18 +49,17 @@ public class Student {
     // infinie
     private StudentList list;
 
-    // @ManyToOne
-    // @JoinColumn(name = "group_id")
-    // @JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle
-    // infinie
-    // private Group group;
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    // @JsonBackReference // affiche qu'une fois le group dans Student sinon boucle infinie
+    private Group group;
 
     public Student() {
     }
 
     // Constructor
     public Student(Long id, String name, Gender gender, Level frLevel, Level skillLevel, Boolean isDWWM,
-            Profile profile, Integer age, StudentList list) {
+            Profile profile, Integer age, StudentList list, Group group) {
         this.name = name;
         this.gender = gender;
         this.frLevel = frLevel;
@@ -69,6 +68,7 @@ public class Student {
         this.profile = profile;
         this.age = age;
         this.list = list;
+        this.group = group;
     }
 
     // Getters & Setters
@@ -144,11 +144,11 @@ public class Student {
         this.list = list;
     }
 
-    // public Group getGroup() {
-    // return group;
-    // }
-    //
-    // public void setGroup(Group group) {
-    // this.group = group;
-    // }
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
 }
