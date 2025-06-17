@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +21,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.randomGroup.model.DTO.GroupRequestDTO;
 import com.example.randomGroup.model.Group;
 import com.example.randomGroup.model.Student;
-import com.example.randomGroup.model.User;
 import com.example.randomGroup.model.ENUM.Gender;
 import com.example.randomGroup.repository.GroupRepository;
 import com.example.randomGroup.repository.StudentRepository;
@@ -229,5 +230,19 @@ public class GroupController {
         }
 
         return repository.save(existingGroup);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        Group existingGroup = repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unexisting group !"));
+        // On détache les étudiants du groupe
+        List<Student> students = existingGroup.getStudents();
+        for (Student student : students) {
+            student.setGroup(null);
+            studentRepository.save(student);
+        }
+        repository.delete(existingGroup);
+        return ResponseEntity.ok("Group deleted !");
     }
 }

@@ -82,7 +82,11 @@ public class StudentListController {
     @PutMapping("/{id}")
     public StudentList update(@PathVariable Long id, @RequestBody StudentList studentList) {
         StudentList existingList = repository.findById(id).orElseThrow(() -> new RuntimeException("List not found"));
-        existingList.setName(studentList.getName());
+
+        if (studentList.getName() != null) {
+
+            existingList.setName(studentList.getName());
+        }
 
         return repository.save(existingList);
     }

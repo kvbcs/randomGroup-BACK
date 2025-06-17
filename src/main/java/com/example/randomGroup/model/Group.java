@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,7 +26,7 @@ public class Group {
     private String name;
 
     // mappedBy : référence la variable group de Student
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = false)
+    @OneToMany(mappedBy = "group")
     // @JsonManagedReference
     private List<Student> students = new ArrayList<>();
 

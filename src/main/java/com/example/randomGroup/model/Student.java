@@ -11,6 +11,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -49,7 +50,7 @@ public class Student {
     private StudentList list;
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id", foreignKey = @ForeignKey(name = "fk_student_group"), nullable = true)
     // @JsonBackReference // affiche qu'une fois le group dans Student sinon boucle infinie
     private Group group;
 
