@@ -3,7 +3,6 @@ package com.example.randomGroup.model;
 import com.example.randomGroup.model.ENUM.Gender;
 import com.example.randomGroup.model.ENUM.Level;
 import com.example.randomGroup.model.ENUM.Profile;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
