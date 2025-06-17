@@ -47,8 +47,13 @@ public class StudentListController {
     }
 
     @PostMapping
-    public StudentList create(@RequestBody StudentList list) {
-        return repository.save(list);
+    public ResponseEntity<?> create(@RequestBody StudentList list) {
+        if (list.getUser() == null || list.getUser().getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is required to create a list.");
+        }
+
+        StudentList saved = repository.save(list);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PostMapping("/{id}")
@@ -81,6 +86,6 @@ public class StudentListController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Unexisting list !");
         }
         repository.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).body("List deleted !");
+        return ResponseEntity.ok("List deleted !");
     }
 }
