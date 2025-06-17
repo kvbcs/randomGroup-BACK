@@ -17,17 +17,22 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.randomGroup.model.Student;
 import com.example.randomGroup.model.StudentList;
+import com.example.randomGroup.model.User;
+import com.example.randomGroup.model.DTO.StudentListDTO;
 import com.example.randomGroup.repository.StudentListRepository;
+import com.example.randomGroup.repository.UserRepository;
 
 @RestController
 @RequestMapping("/lists")
 public class StudentListController {
 
     private final StudentListRepository repository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public StudentListController(StudentListRepository repository) {
+    public StudentListController(StudentListRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -47,13 +52,15 @@ public class StudentListController {
     }
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody StudentList list) {
-        if (list.getUser() == null || list.getUser().getId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User is required to create a list.");
-        }
+    public ResponseEntity<StudentList> createList(@RequestBody StudentListDTO dto) {
+        User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        StudentList saved = repository.save(list);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        StudentList list = new StudentList();
+        list.setName(dto.getName());
+        list.setUser(user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(list));
     }
 
     @PostMapping("/{id}")

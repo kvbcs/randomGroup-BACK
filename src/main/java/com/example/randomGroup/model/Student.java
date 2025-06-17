@@ -1,11 +1,11 @@
 package com.example.randomGroup.model;
 
-
 import com.example.randomGroup.model.ENUM.Gender;
 import com.example.randomGroup.model.ENUM.Level;
 import com.example.randomGroup.model.ENUM.Profile;
 //import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.Column;
@@ -44,12 +44,15 @@ public class Student {
     // Relation avec table StudentList
     @ManyToOne
     @JoinColumn(name = "list")
-    //@JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle infinie
+    @JsonIgnoreProperties({ "students" })
+    // @JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle
+    // infinie
     private StudentList list;
 
     // @ManyToOne
     // @JoinColumn(name = "group_id")
-    // @JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle infinie
+    // @JsonBackReference // affiche qu'une fois la liste dans Student sinon boucle
+    // infinie
     // private Group group;
 
     public Student() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
@@ -15,7 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id") // stop la sérialisation infinie et renvoie un id à la place
 @Entity
 public class StudentList {
 
@@ -36,6 +37,7 @@ public class StudentList {
     
     @ManyToOne(optional = false) // impose que ce champ soit obligatoire (non-null)
     @JoinColumn(name = "user_id", nullable = false) // force NOT NULL au niveau SQL
+    @JsonIgnoreProperties({"lists", "password", "firstName", "lastName"}) // empêche l'inclusion des propriétés dans la réponse
     private User user;
 
     // Constructor

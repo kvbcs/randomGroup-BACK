@@ -1,6 +1,7 @@
 package com.example.randomGroup.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.randomGroup.model.Student;
+import com.example.randomGroup.model.StudentList;
+import com.example.randomGroup.repository.StudentListRepository;
 import com.example.randomGroup.repository.StudentRepository;
 
 @RestController
@@ -24,10 +27,12 @@ import com.example.randomGroup.repository.StudentRepository;
 public class StudentController {
 
     private final StudentRepository repository;
+    private final StudentListRepository studentListRepository;
 
     @Autowired
-    public StudentController(StudentRepository repository) {
+    public StudentController(StudentRepository repository, StudentListRepository studentListRepository) {
         this.repository = repository;
+        this.studentListRepository = studentListRepository;
     }
 
     @GetMapping
@@ -58,8 +63,19 @@ public class StudentController {
         return repository.save(student);
     }
 
+    // @PutMapping("/{id}")
+    // public Student update(@PathVariable Long id, @RequestBody Student student) {
     @PutMapping("/{id}")
-    public Student update(@PathVariable Long id, @RequestBody Student student) {
+    public Student update(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        Student student = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        if (body.containsKey("list")) {
+            Long listId = Long.valueOf(body.get("list").toString());
+            StudentList studentList = studentListRepository.findById(listId)
+                    .orElseThrow(() -> new RuntimeException("List not found"));
+            student.setList(studentList);
+        }
         Student existingStudent = repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         if (student.getName() != null) {
 
@@ -92,6 +108,10 @@ public class StudentController {
         if (student.getAge() != null) {
 
             existingStudent.setAge(student.getAge());
+        }
+        if (student.getList() != null) {
+
+            existingStudent.setList(student.getList());
         }
 
         return repository.save(existingStudent);
