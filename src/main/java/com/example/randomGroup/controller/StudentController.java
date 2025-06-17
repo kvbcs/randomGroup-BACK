@@ -63,8 +63,7 @@ public class StudentController {
         return repository.save(student);
     }
 
-    // @PutMapping("/{id}")
-    // public Student update(@PathVariable Long id, @RequestBody Student student) {
+    
     @PutMapping("/{id}")
     public Student update(@PathVariable Long id, @RequestBody Map<String, Object> body) {
         Student student = repository.findById(id)
