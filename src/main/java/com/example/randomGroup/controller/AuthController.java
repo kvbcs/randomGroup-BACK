@@ -27,15 +27,16 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public ResponseEntity<User> register(@RequestBody User user) {
         // Vérifie si l'email existe déjà avec méthode créé dans le repository
         if (repository.findByEmail(user.getEmail()).isPresent()) {
             // Renvoie un http 409 conflit
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Invalid credentials");
-        } else {        repository.save(user);
-}
+        }
+        User newUser = repository.save(user);
+
         // Retourne 201 + message confirmation
-        return ResponseEntity.status(HttpStatus.CREATED).body("Register Successful !");
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
     @PostMapping("/login")

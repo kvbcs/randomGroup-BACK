@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ public class UserController {
         this.repository = repository;
     }
 
+    @CrossOrigin(origins="http://localhost:4200")
     @GetMapping
     public List<User> getAllUsers() {
         if (repository.findAll().isEmpty()) {
@@ -39,6 +41,7 @@ public class UserController {
 
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         User existingUser = repository.findById(id)
@@ -48,8 +51,9 @@ public class UserController {
 
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User user) {
         User existingUser = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unexisting user !"));
 
@@ -76,10 +80,11 @@ public class UserController {
         }
 
         //Sauvegarde
-        repository.save(existingUser);
-        return ResponseEntity.status(HttpStatus.OK).body("User with email :\n" + existingUser.getEmail() + " \nwas updated !");
+        User updated = repository.save(existingUser);
+        return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         if (repository.findById(id).isEmpty()) {
