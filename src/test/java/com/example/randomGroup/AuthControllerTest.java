@@ -36,6 +36,18 @@ public class AuthControllerTest {
         User user = new User(null, "jean", "jack", "email2", "pass", null);
 
         mockMvc.perform(
-                post("/auth/register").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(user))).andExpect(status().isCreated()).andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.firstName").value("jean"));
+                post("/auth/register").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isCreated()).andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.firstName").value("jean"));
+    }
+
+    @Test
+    void testLogin() throws Exception {
+        User user = repository.save(new User(null, "jean", "jack", "email2", "pass", null));
+
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isOk());
     }
 }
