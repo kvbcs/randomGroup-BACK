@@ -27,6 +27,7 @@ public class AuthControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         repository.deleteAll();
     }

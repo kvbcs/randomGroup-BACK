@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.randomGroup.model.ENUM.Gender;
+import com.example.randomGroup.model.ENUM.Level;
+import com.example.randomGroup.model.ENUM.Profile;
 import com.example.randomGroup.model.Student;
 import com.example.randomGroup.model.StudentList;
 import com.example.randomGroup.repository.StudentListRepository;
@@ -63,57 +66,42 @@ public class StudentController {
         return repository.save(student);
     }
 
-    
     @PutMapping("/{id}")
     public Student update(@PathVariable Long id, @RequestBody Map<String, Object> body) {
-        Student student = repository.findById(id)
+        Student existingStudent = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         if (body.containsKey("list")) {
             Long listId = Long.valueOf(body.get("list").toString());
             StudentList studentList = studentListRepository.findById(listId)
                     .orElseThrow(() -> new RuntimeException("List not found"));
-            student.setList(studentList);
-        }
-        Student existingStudent = repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        if (student.getName() != null) {
-
-            existingStudent.setName(student.getName());
-        }
-        if (student.getGender() != null) {
-
-            existingStudent.setGender(student.getGender());
-        }
-        if (student.getFrLevel() != null) {
-
-            existingStudent.setFrLevel(student.getFrLevel());
+            existingStudent.setList(studentList);
         }
 
-        if (student.getIsDWWM() != null) {
-
-            existingStudent.setIsDWWM(student.getIsDWWM());
+        if (body.containsKey("name")) {
+            existingStudent.setName(body.get("name").toString());
         }
-
-        if (student.getSkillLevel() != null) {
-
-            existingStudent.setSkillLevel(student.getSkillLevel());
+        if (body.containsKey("gender")) {
+            existingStudent.setGender(Gender.valueOf(body.get("gender").toString().toUpperCase()));
         }
-
-        if (student.getProfile() != null) {
-
-            existingStudent.setProfile(student.getProfile());
+        if (body.containsKey("frLevel")) {
+            existingStudent.setFrLevel(Level.valueOf(body.get("frLevel").toString().toUpperCase()));
         }
-
-        if (student.getAge() != null) {
-
-            existingStudent.setAge(student.getAge());
+        if (body.containsKey("isDWWM")) {
+            existingStudent.setIsDWWM(Boolean.valueOf(body.get("isDWWM").toString()));
         }
-        if (student.getList() != null) {
-
-            existingStudent.setList(student.getList());
+        if (body.containsKey("skillLevel")) {
+            existingStudent.setSkillLevel(Level.valueOf(body.get("skillLevel").toString().toUpperCase()));
+        }
+        if (body.containsKey("profile")) {
+            existingStudent.setProfile(Profile.valueOf(body.get("profile").toString().toUpperCase()));
+        }
+        if (body.containsKey("age")) {
+            existingStudent.setAge(Integer.valueOf(body.get("age").toString()));
         }
 
         return repository.save(existingStudent);
+
     }
 
     @DeleteMapping("/{id}")
