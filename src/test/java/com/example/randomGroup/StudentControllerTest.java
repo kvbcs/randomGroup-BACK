@@ -10,15 +10,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static com.example.randomGroup.model.ENUM.Gender.*;
-import static com.example.randomGroup.model.ENUM.Level.*;
-import static com.example.randomGroup.model.ENUM.Profile.*;
-
+import static com.example.randomGroup.model.ENUM.Gender.MASCULIN;
+import static com.example.randomGroup.model.ENUM.Level.LEVEL_1;
+import static com.example.randomGroup.model.ENUM.Profile.TIMIDE;
 import com.example.randomGroup.model.Student;
 import com.example.randomGroup.repository.StudentRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,4 +80,12 @@ public class StudentControllerTest {
                 .andExpect(jsonPath("$.name").value("jack"));
     }
 
+    @Test
+    void testDeleteStudent() throws Exception {
+            Student student = repository
+                            .save(new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null));
+
+            mockMvc.perform(delete("/students/" + student.getId())).andExpect(status().isOk())
+                            .andExpect(jsonPath("$.id").doesNotExist()).andExpect(jsonPath("$.name").doesNotExist());
+    }
 }

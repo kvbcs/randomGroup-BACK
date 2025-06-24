@@ -71,32 +71,32 @@ public class StudentController {
         Student existingStudent = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        if (body.containsKey("list")) {
-            Long listId = Long.valueOf(body.get("list").toString());
+        if (body.get("list") != null) {
+                    Long listId = Long.valueOf(body.get("list").toString());
             StudentList studentList = studentListRepository.findById(listId)
                     .orElseThrow(() -> new RuntimeException("List not found"));
             existingStudent.setList(studentList);
         }
 
-        if (body.containsKey("name")) {
+        if (body.get("name") != null) {
             existingStudent.setName(body.get("name").toString());
         }
-        if (body.containsKey("gender")) {
+        if (body.get("gender") != null) {
             existingStudent.setGender(Gender.valueOf(body.get("gender").toString().toUpperCase()));
         }
-        if (body.containsKey("frLevel")) {
+        if (body.get("frLevel") != null) {
             existingStudent.setFrLevel(Level.valueOf(body.get("frLevel").toString().toUpperCase()));
         }
-        if (body.containsKey("isDWWM")) {
+        if (body.get("isDWWM") != null) {
             existingStudent.setIsDWWM(Boolean.valueOf(body.get("isDWWM").toString()));
         }
-        if (body.containsKey("skillLevel")) {
+        if (body.get("skillLevel") != null) {
             existingStudent.setSkillLevel(Level.valueOf(body.get("skillLevel").toString().toUpperCase()));
         }
-        if (body.containsKey("profile")) {
+        if (body.get("profile") != null) {
             existingStudent.setProfile(Profile.valueOf(body.get("profile").toString().toUpperCase()));
         }
-        if (body.containsKey("age")) {
+        if (body.get("age") != null) {
             existingStudent.setAge(Integer.valueOf(body.get("age").toString()));
         }
 
