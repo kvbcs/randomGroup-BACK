@@ -74,7 +74,7 @@ public class GroupController {
         // 4. Sauvegarder
         Group saved = repository.save(group);
 
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     // Fonction pour filtrer les étudiants
