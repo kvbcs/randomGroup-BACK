@@ -64,7 +64,7 @@ public class StudentListController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<String> addStudents(@PathVariable Long id, @RequestBody Student newStudent) {
+    public ResponseEntity<StudentList> addStudents(@PathVariable Long id, @RequestBody Student newStudent) {
         StudentList existingList = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unexisting list !"));
 
@@ -76,7 +76,7 @@ public class StudentListController {
 
         repository.save(existingList);
 
-        return ResponseEntity.status(HttpStatus.OK).body("Student added to list " + existingList.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(existingList);
     }
 
     @PutMapping("/{id}")

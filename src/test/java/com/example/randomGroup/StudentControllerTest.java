@@ -25,67 +25,72 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SpringBootTest
 @AutoConfigureMockMvc
 public class StudentControllerTest {
-    @Autowired
-    private StudentRepository repository;
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private StudentRepository repository;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @BeforeEach
-    @SuppressWarnings("unused")
-    void setUp() {
-        repository.deleteAll();
-    }
+        @BeforeEach
+        @SuppressWarnings("unused")
+        void setUp() {
+                repository.deleteAll();
+        }
 
-    @Test
-    void testGetStudents() throws Exception {
-        Student student = repository
-                .save(new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null));
+        @Test
+        void testGetStudents() throws Exception {
+                repository
+                                .save(new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null,
+                                                null));
 
-        mockMvc.perform(get("/students")).andExpect(status().isOk()).andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].name").value("joe"));
-    }
+                mockMvc.perform(get("/students")).andExpect(status().isOk()).andExpect(jsonPath("$[0].id").exists())
+                                .andExpect(jsonPath("$[0].name").value("joe"));
+        }
 
-    @Test
-    void testGetStudent() throws Exception {
-        Student student = repository
-                .save(new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null));
+        @Test
+        void testGetStudent() throws Exception {
+                Student student;
+                student = repository.save(
+                                new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null));
 
-        mockMvc.perform(get("/students/" + student.getId())).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("joe"));
-    }
+                mockMvc.perform(get("/students/" + student.getId())).andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").exists())
+                                .andExpect(jsonPath("$.name").value("joe"));
+        }
 
-    @Test
-    void testCreateStudent() throws Exception {
-        Student student = new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null);
+        @Test
+        void testCreateStudent() throws Exception {
+                Student student = new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null);
 
-        mockMvc.perform(post("/students").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(student))).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("joe"));
-    }
+                mockMvc.perform(post("/students").contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(student))).andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").exists())
+                                .andExpect(jsonPath("$.name").value("joe"));
+        }
 
-    @Test
-    void testUpdateStudent() throws Exception {
-        Student student = repository
-                .save(new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null));
+        @Test
+        void testUpdateStudent() throws Exception {
+                Student student = repository
+                                .save(new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null,
+                                                null));
 
-        student.setName("jack");
-        mockMvc.perform(put("/students/" + student.getId()).contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(student))).andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.name").value("jack"));
-    }
+                student.setName("jack");
+                mockMvc.perform(put("/students/" + student.getId()).contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(student))).andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").exists())
+                                .andExpect(jsonPath("$.name").value("jack"));
+        }
 
-    @Test
-    void testDeleteStudent() throws Exception {
-            Student student = repository
-                            .save(new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null));
+        @Test
+        void testDeleteStudent() throws Exception {
+                Student student = repository
+                                .save(new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null,
+                                                null));
 
-            mockMvc.perform(delete("/students/" + student.getId())).andExpect(status().isOk())
-                            .andExpect(jsonPath("$.id").doesNotExist()).andExpect(jsonPath("$.name").doesNotExist());
-    }
+                mockMvc.perform(delete("/students/" + student.getId())).andExpect(status().isOk())
+                                .andExpect(jsonPath("$.id").doesNotExist())
+                                .andExpect(jsonPath("$.name").doesNotExist());
+        }
 }

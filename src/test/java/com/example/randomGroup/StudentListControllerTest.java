@@ -1,7 +1,5 @@
 package com.example.randomGroup;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.example.randomGroup.model.ENUM.Gender.MASCULIN;
+import static com.example.randomGroup.model.ENUM.Level.LEVEL_1;
+import static com.example.randomGroup.model.ENUM.Profile.TIMIDE;
+import com.example.randomGroup.model.Student;
 import com.example.randomGroup.model.StudentList;
 import com.example.randomGroup.model.User;
 import com.example.randomGroup.model.DTO.StudentListDTO;
@@ -31,6 +33,7 @@ public class StudentListControllerTest {
 
     @Autowired
     private UserRepository userRepo;
+
     // mockmvc simule les requetes http
     @Autowired
     private MockMvc mockMvc;
@@ -41,6 +44,7 @@ public class StudentListControllerTest {
 
     // avant chaque test, on vide la base pour rester propre
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         repository.deleteAll();
     }
@@ -76,6 +80,16 @@ public class StudentListControllerTest {
     }
 
     @Test
+    void testAddStudents() throws Exception {
+        User user = userRepo.save(new User(null, "fghjk", "fghj", "ghjk", "ghjk", null));
+        Student student = new Student(null, "joe", MASCULIN, LEVEL_1, LEVEL_1, true, TIMIDE, 18, null, null);
+
+        StudentList list = repository.save(new StudentList(null, "fghj", null, user));
+
+mockMvc.perform(post("/lists/" + list.getId()).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(student))).andExpect(status().isCreated()).andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.students[0].name").value("joe"));
+    }
+
+    @Test
     void testUpdateList() throws Exception {
         User user = userRepo.save(new User(null, "fghjk", "fghj", "ghjk", "ghjk", null));
 
@@ -84,8 +98,19 @@ public class StudentListControllerTest {
         list.setName("liste");
 
         mockMvc.perform(
-                put("/lists").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(list)))
+                put("/lists/" + list.getId()).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(list)))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.name").value("liste"));
+    }
+
+    @Test
+    void testDeleteList() throws Exception {
+        User user = userRepo.save(new User(null, "fghjk", "fghj", "ghjk", "ghjk", null));
+
+        StudentList list = repository.save(new StudentList(null, "fghj", null, user));
+
+        mockMvc.perform(delete("/lists/" + list.getId())).andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").doesNotExist()).andExpect(jsonPath("$.name").doesNotExist());
     }
 }
