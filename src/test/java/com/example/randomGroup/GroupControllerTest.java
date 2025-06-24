@@ -1,5 +1,6 @@
 package com.example.randomGroup;
 
+import java.awt.PageAttributes;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import static com.example.randomGroup.model.ENUM.Profile.TIMIDE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,7 +62,8 @@ public class GroupControllerTest {
 
         // Puis vider les tables sans erreur de contrainte
         repository.deleteAll();
-        studentRepo.deleteAll();    }
+        studentRepo.deleteAll();
+    }
 
     @Test
     void testGetGroups() throws Exception {
@@ -107,6 +110,24 @@ public class GroupControllerTest {
                 .andExpect(jsonPath("$.students.length()").value(2))
                 .andExpect(jsonPath("$.students[0].id").exists())
                 .andExpect(jsonPath("$.students[1].id").exists());
+    }
+
+    @Test
+    void testUpdateGroup() throws Exception {
+        Student s1 = studentRepo.save(new Student(null, "Alice", FEMININ, LEVEL_1, LEVEL_1, true,
+                TIMIDE, 52, null, null));
+        Student s2 = studentRepo.save(new Student(null, "Bob", MASCULIN, LEVEL_3, LEVEL_3, true,
+                TIMIDE, 30, null, null));
+        Student s3 = studentRepo.save(new Student(null, "Charlie", MASCULIN, LEVEL_4, LEVEL_2, true,
+                TIMIDE, 19, null, null));
+        Group group = repository.save(new Group(null, "group", List.of(s1, s2, s3)));
+
+        group.setName("name");
+        group.setStudents(List.of(s1));
+        
+        mockMvc.perform(put("/groups/" + group.getId()).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(group))).andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("name")).andExpect(jsonPath("$.students.length()").value(1)).andExpect(jsonPath("$.students[0].name").value("Alice"));
     }
 
     @Test
