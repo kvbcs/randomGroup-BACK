@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.randomGroup.model.DTO.GroupRequestDTO;
+import com.example.randomGroup.model.ENUM.Gender;
 import com.example.randomGroup.model.Group;
 import com.example.randomGroup.model.Student;
-import com.example.randomGroup.model.ENUM.Gender;
 import com.example.randomGroup.repository.GroupRepository;
 import com.example.randomGroup.repository.StudentRepository;
 
@@ -221,12 +220,12 @@ public class GroupController {
                 // Important : rattache bien l'étudiant au bon groupe
                 originalStudent.setGroup(existingGroup);
 
-                updatedStudents.add(originalStudent);
+                // updatedStudents.add(originalStudent);
             }
 
             // 🧼 On remplace la liste complète proprement
-            existingGroup.getStudents().clear();
-            existingGroup.getStudents().addAll(updatedStudents);
+            // existingGroup.getStudents().clear();
+            // existingGroup.getStudents().addAll(updatedStudents);
         }
 
         return repository.save(existingGroup);
